@@ -1,5 +1,7 @@
 Programmer: Elijah Newman-Gomez
 
+Live Demo: http://www.anarchyarcade.com/cse/mobile/
+
 This is a user profile database using MongoLab and the MongoLab JavaScript API.
 
 Load index.html in any web browser to test it out.
