@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="md5.js"></script>
+    <script src="session.js"></script>
+  </head>
+<body>
+
+  <table width="100%">
+  <tr><td width="50%">
+
+    <h3>ADD NEW DATABASE MEMBER</h3>
+    <form onsubmit="submitForm('signup', this); return false;">
+      UserName: <input type="text" id="name"><br />
+      Password: <input type="password" id="password"><br />
+      Age: <input type="text" id="age"><br />
+      Favorite Color: <input type="text" id="color"><br />
+      <input type="submit" value="Sign-Up">
+    </form>
+
+    <hr />
+
+    <h3>LOGIN WITH EXISTING DATABASE MEMBER</h3>
+    <form onsubmit="submitForm('login', this); return false;">
+      UserName: <input type="text" id="name"><br />
+      Password: <input type="text" id="password"><br />
+      <input type="submit" value="Login">
+    </form>
+
+    <hr />
+
+    <h3>ADD/UPDATE FIELDS FOR LOGGED IN MEMBER</h3>
+    <form onsubmit="submitForm('write', this); return false;">
+      Age: <input type="text" id="age"><br />
+      Favorite Color: <input type="text" id="color"><br />
+      <input type="submit" value="Save">
+    </form>
+
+    <hr />
+
+    <h3>LOGOUT</h3>
+    <form onsubmit="submitForm('logout', this); return false;">
+      <input type="submit" value="Logout">
+    </form>
+
+  </td><td width="50%" valign="top" bgcolor="#999999">
+
+    <h2>Active User</h2>
+    <textarea id="profile" cols="60" rows="10">Not logged in.</textarea>
+
+    <hr />
+
+    <h2>Entire Database <input type="button" value="refresh" onclick="RefreshDatabase();" /></h2>
+    <textarea id="dataview" cols="60" rows="10">Click the refresh button to show.</textarea>
+
+  </td></tr>
+  </table>
+
+<script>
+var g_mySession = new Session("newmangsquares", "users", "50f40a7ee4b09b3cd11ebda4");
+
+function submitForm(action, form) {
+  if( action === 'login' || action === 'signup' ) {
+    if( form.name.value === "" || form.password.value === "" ) {
+      alert("Name and password are required.");
+      return;
+    }
+  }
+
+  var inputs = form.getElementsByTagName("input");
+  var data = {};
+  for( var i = 0; i < inputs.length; i++ ) {
+    if( inputs[i].value === "" || inputs[i].type === "submit" || inputs[i].type === "button" ) {
+      continue;
+    }
+
+    data[inputs[i].id] = inputs[i].value;
+  }
+
+  switch( action ){
+    case "signup":
+      g_mySession.signup(data);
+      break;
+
+    case "login":
+      g_mySession.login(data);
+      break;
+
+    case "write":
+      g_mySession.write(data);
+      break;
+
+    case "logout":
+      g_mySession.logout();
+      break;
+  }
+}
+
+function RefreshDatabase() {
+
+  var request = new XMLHttpRequest();
+
+  request.onreadystatechange = function() {
+    if( request.readyState == 4 && request.status == 200 ) {
+      document.getElementById("dataview").value = request.responseText;
+    }
+  };
+
+  request.open("GET", g_mySession.urlBase + "?apiKey=" + g_mySession.key, true);
+  request.send(null);
+}
+</script>
+
+</body>
+</html>
