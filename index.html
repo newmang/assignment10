@@ -61,6 +61,19 @@
 <script>
 var g_mySession = new Session("newmangsquares", "users", "50f40a7ee4b09b3cd11ebda4");
 
+g_mySession.setEventListener("status_change", function(status) {
+  if( status === true ) {
+    document.getElementById("profile").value = JSON.stringify(this.user);
+  }
+  else {
+    document.getElementById("profile").value = "Not logged in.";
+  }
+});
+
+g_mySession.setEventListener("data_write", function(data) {
+    document.getElementById("profile").value = JSON.stringify(g_mySession.user);
+});
+
 function submitForm(action, form) {
   if( action === 'login' || action === 'signup' ) {
     if( form.name.value === "" || form.password.value === "" ) {
